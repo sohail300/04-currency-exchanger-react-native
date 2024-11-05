@@ -1,5 +1,12 @@
 /* eslint-disable prettier/prettier */
-import {FlatList, StyleSheet, Text, TextInput, View} from 'react-native';
+import {
+  Dimensions,
+  FlatList,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import React from 'react';
 import {currencyByRupee} from './utils/currencyRate';
 import Card from './Card';
@@ -13,90 +20,109 @@ export default function Body() {
   const result = useRecoilValue(resultState);
 
   return (
-    <View>
-      <View style={styles.headingContainer}>
-        <Text style={styles.heading}>Body</Text>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Currency Exchange</Text>
+        <Text style={styles.title}>Rate Calculator 💸</Text>
       </View>
       <View style={styles.inputContainer}>
         <Text style={styles.indianRupees}>₹</Text>
         <TextInput
-          style={styles.textInput}
+          style={styles.input}
           value={amount}
           onChangeText={text => setAmount(text)}
           keyboardType="numeric"
+          placeholderTextColor="#999"
+          placeholder="Enter amount"
         />
       </View>
-      <View>
-        <FlatList
-          data={currencyByRupee}
-          numColumns={3}
-          keyExtractor={item => item.name}
-          horizontal={false}
-          renderItem={({item}) => (
-            <Card
-              name={item.name}
-              value={item.value}
-              flag={item.flag}
-              symbol={item.symbol}
-              amount={amount}
-            />
-          )}
-          style={styles.container}
-        />
-      </View>
+      <FlatList
+        scrollEnabled={false}
+        data={currencyByRupee}
+        numColumns={3}
+        keyExtractor={item => item.name}
+        horizontal={false}
+        renderItem={({item}) => (
+          <Card
+            name={item.name}
+            value={item.value}
+            flag={item.flag}
+            symbol={item.symbol}
+            amount={amount}
+          />
+        )}
+        contentContainerStyle={styles.cardList}
+      />
       {isCalculated && (
-        <>
-          <View style={styles.convertedContainer}>
-            <Text style={styles.resultText}>{result}</Text>
-          </View>
-        </>
+        <View style={styles.resultContainer}>
+          <Text style={styles.resultText}>{result}</Text>
+        </View>
       )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  headingContainer: {
+  container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    margin: 16,
-    marginTop: 24,
+    height: Dimensions.get('window').height,
+    backgroundColor: '#f0f0f0',
+    paddingHorizontal: 24,
+    paddingVertical: 32,
   },
-  heading: {
+  header: {
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  title: {
     fontSize: 24,
     fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#333',
   },
   inputContainer: {
-    flex: 1,
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
-  },
-  textInput: {
-    backgroundColor: '#fff',
-    color: '#000',
-    width: 80,
-    borderRadius: 8,
+    marginBottom: 20,
   },
   indianRupees: {
     fontSize: 24,
-    marginRight: 16,
+    color: '#666',
+    marginRight: 8,
   },
-  convertedContainer: {
-    width: 200,
-    height: 80,
-    backgroundColor: '#fff',
-    borderRadius: 8,
+  input: {
     flex: 1,
-    justifyContent: 'center',
+    backgroundColor: '#fff',
+    color: '#333',
+    height: 48,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    fontSize: 18,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  cardList: {
+    marginTop: 16,
     alignItems: 'center',
-    marginVertical: 40,
-    marginHorizontal: 80,
+  },
+  resultContainer: {
+    alignItems: 'center',
+    marginTop: 24,
+    paddingVertical: 16,
+    backgroundColor: '#e0ffe0',
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 4},
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 4,
   },
   resultText: {
-    color: '#000',
-    fontWeight: '500',
+    color: '#2a9d8f',
+    fontWeight: '600',
     fontSize: 24,
   },
 });
